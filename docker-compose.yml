@@ -3,7 +3,7 @@ version: '3'
 services:
   microservice:
     build: .
-    container_name: "api"
+    container_name: "cc"
     ports:
       - 6324:6324
     links:
@@ -12,9 +12,9 @@ services:
       - mongodb
     environment:
       - MONGO_HOST=mongodb
-      - MONGO_NAME=microservice
+      - MONGO_NAME=microservice1
     volumes:
-      - .:/src
+      - .:/usr/src/app
   mongodb:
     image: daocloud.io/library/mongo
     container_name: "mongodb"
@@ -24,5 +24,5 @@ services:
     volumes:
       - ./data/db:/data/db
     # ports:
-    #     - 27017:27017
+    #     - 27020:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet

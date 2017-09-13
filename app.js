@@ -4,19 +4,22 @@ const KoaRouter = require("koa-router");
 const bodyParser = require("koa-bodyparser");
 const logger = require("koa-logger");
 
-
 // See http://mongoosejs.com/docs/promises.html
 mongoose.Promise = global.Promise;
 
 // MongoDB Host
-const mongoHost = process.env.MONGO_HOST
-const mongoName = process.env.MONGO_NAME
+const mongoHost = process.env.MONGO_HOST;
+const mongoName = process.env.MONGO_NAME;
 
 // Connect to your MongoDB instance(s)
 mongoose.connect(`mongodb://${mongoHost}/${mongoName}`, { useMongoClient: true });
 // mongoose.Promise = global.Promise;
 
+// mongoose.connect(`mongodb://localhost/myapp`, { useMongoClient: true });
+
 // mongoose.connect("mongodb://localhost/myapp", { useMongoClient: true });
+
+// create todo Schema
 
 const TodoSchema = new mongoose.Schema({
   todo: {
@@ -42,21 +45,36 @@ const app = new Koa();
 
 const router = new KoaRouter();
 
-router.get("/todos", async (ctx, next) => {
+router.get("/todo", async (ctx, next) => {
   const data = await Todo.find();
   ctx.success("成功", data, 200);
   await next();
 });
 
-router.post("/todos", async (ctx, next) => {
+router.post("/todo", async (ctx, next) => {
   const { todo, author, description } = ctx.request.body;
-  if (!todo) return ctx.error("todo不能为空", {}, 402);
-  if (!author) return ctx.error("author不能为空", {}, 402);
+  console.log(todo);
+  console.log(author);
+  console.log(todo);
+  if (!todo) {
+    ctx.status = 400;
+    return (ctx.body = {
+      data: {},
+      message: "参数错误,缺少todo"
+    });
+  }
+  if (!author) {
+    ctx.status = 400;
+    return (ctx.body = {
+      data: {},
+      message: "参数错误,缺少author"
+    });
+  }
   const _findTodo = await Todo.findOne({
     todo,
     author
   });
-  if (_findTodo) ctx.error("你已经提交过相同的todo", {}, 402);
+  if (_findTodo) return ctx.error("你已经提交过相同的todo", {}, 400);
   const data = await Todo.create({ todo, author, description });
   ctx.success("获取成功", data, 200);
   await next();
