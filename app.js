@@ -15,10 +15,6 @@ const mongoName = process.env.MONGO_NAME;
 mongoose.connect(`mongodb://${mongoHost}/${mongoName}`, { useMongoClient: true });
 // mongoose.Promise = global.Promise;
 
-// mongoose.connect(`mongodb://localhost/myapp`, { useMongoClient: true });
-
-// mongoose.connect("mongodb://localhost/myapp", { useMongoClient: true });
-
 // create todo Schema
 
 const TodoSchema = new mongoose.Schema({
